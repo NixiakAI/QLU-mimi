@@ -1,21 +1,44 @@
-import json,random,re,time,jsonpath,requests,urllib3
+import json, random, re, time, jsonpath, requests, urllib3
 from flask import Flask, render_template, request
+from concurrent.futures import ThreadPoolExecutor
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 app = Flask(__name__)
+executor = ThreadPoolExecutor()
+
 @app.route('/')
 def index():
     return render_template('daka.html')
+
+def daka_async(token):
+    # 异步执行打卡操作
+    daka(token)
+
+
+import datetime
+token_dict = {}
+
 
 @app.route('/run_program', methods=['POST'])
 def run_program():
     input_content = request.form['input_content']
     token = input_content
+
     if len(token) == 32:
-        daka(token)
-        return "打卡完成！"
+        if token in token_dict:
+            last_submit_time = token_dict[token]
+            current_time = datetime.datetime.now()
+            time_diff = current_time - last_submit_time
+            if time_diff.total_seconds() < 7200:
+                return render_template('end.html', code="您已提交过token，禁止重复提交！")
+
+        # 更新字典中的token和提交时间
+        token_dict[token] = datetime.datetime.now()
+
+        executor.submit(daka_async, token)  # 异步执行打卡操作
+        return render_template('end.html', code="打卡成功，请耐心等待即可")
     else:
-        return "输入有误，重新再试！"
+        return render_template('end.html', code="输入有误，请重新再试！")
+
 
 def daka(token):
     getline = "https://admin.report.mestallion.com/api/mini/sport/getline"
@@ -72,6 +95,3 @@ def daka(token):
 
 if __name__ == '__main__':
     app.run()
-
-
-
