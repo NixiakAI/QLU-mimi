@@ -71,7 +71,7 @@ def daka(token):
     ids = re.findall(',"id":(.{1,12}?),"lat":', reqmap.text)
     print(lngs, lats, ids)
 
-    for i in range(3):
+    for i in range(4):
         data = {
             "ble": "false",
             "gps": "false",
