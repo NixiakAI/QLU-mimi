@@ -11,6 +11,8 @@
 
 具体请查看b站视频：[视频地址](https://www.bilibili.com/video/BV14z4y1u7CZ/?share_source=copy_web&vd_source=43826fee3a253b7deb7c657bb5635238)
 
+或者查看图文教程：[地址](https://qlu.nixiak.xyz/mimi.html)
+
 2.接着运行'''app.py'''文件，进入网页后输入你的token即可！！！
 ```python
 注意不要在打卡时间内关闭python
