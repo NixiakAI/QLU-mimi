@@ -57,6 +57,8 @@ def daka(token):
     }
     # 提交协议头信息，获取全部路线数据信息
     reqgetline = requests.post(url=getline, headers=header, data=getdata)
+    frequent = requests.post(url=map, headers=header) 
+    count_frequent = str(frequent.json()).count('point_name')
     jsondata = json.loads(reqgetline.text)
     getcode = jsonpath.jsonpath(jsondata, '$[code]')
     if 200 in getcode:
@@ -71,7 +73,7 @@ def daka(token):
     ids = re.findall(',"id":(.{1,12}?),"lat":', reqmap.text)
     print(lngs, lats, ids)
 
-    for i in range(4):
+    for i in range(count_frequent):
         data = {
             "ble": "false",
             "gps": "false",
